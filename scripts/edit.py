@@ -15,13 +15,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-try:
-    import google.generativeai as genai
-    HAS_GENAI = True
-except ImportError:
-    HAS_GENAI = False
-    import urllib.request
-    import urllib.error
+import urllib.error
+import urllib.request
 
 
 def load_api_key():
@@ -66,47 +61,8 @@ def load_image(image_path):
     return base64.b64encode(image_data).decode("utf-8"), mime_type
 
 
-def edit_with_genai(image_path, instruction, model_name, image_size, output_path):
-    """Edit image using google-generativeai library."""
-    api_key = load_api_key()
-    if not api_key:
-        print("Error: No API key found. Set GOOGLE_AI_API_KEY environment variable.")
-        sys.exit(1)
-
-    genai.configure(api_key=api_key)
-
-    model = genai.GenerativeModel(model_name)
-
-    # Load source image
-    image_data_b64, mime_type = load_image(image_path)
-    image_data = base64.b64decode(image_data_b64)
-
-    generation_config = {
-        "response_modalities": ["IMAGE"],
-    }
-    if image_size:
-        generation_config["image_size"] = image_size.upper()
-
-    response = model.generate_content(
-        [
-            {"mime_type": mime_type, "data": image_data},
-            instruction,
-        ],
-        generation_config=generation_config,
-    )
-
-    for part in response.candidates[0].content.parts:
-        if hasattr(part, "inline_data") and part.inline_data.mime_type.startswith("image/"):
-            with open(output_path, "wb") as f:
-                f.write(part.inline_data.data)
-            return output_path
-
-    print("Error: No image was returned in the response.")
-    sys.exit(1)
-
-
 def edit_with_urllib(image_path, instruction, model_name, image_size, output_path):
-    """Edit image using stdlib urllib (fallback)."""
+    """Edit an image via the REST API using only the standard library."""
     api_key = load_api_key()
     if not api_key:
         print("Error: No API key found. Set GOOGLE_AI_API_KEY environment variable.")
@@ -135,7 +91,7 @@ def edit_with_urllib(image_path, instruction, model_name, image_size, output_pat
         },
     }
     if image_size:
-        payload["generationConfig"]["imageSize"] = image_size.upper()
+        payload["generationConfig"]["imageConfig"] = {"imageSize": image_size.upper()}
 
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
@@ -204,11 +160,7 @@ def main():
     print(f"Output: {output_path}")
     print()
 
-    if HAS_GENAI:
-        edit_with_genai(args.image, args.instruction, args.model, args.size, output_path)
-    else:
-        print("Note: google-generativeai not installed, using urllib fallback.")
-        edit_with_urllib(args.image, args.instruction, args.model, args.size, output_path)
+    edit_with_urllib(args.image, args.instruction, args.model, args.size, output_path)
 
     print(f"Edited image saved to: {output_path}")
 

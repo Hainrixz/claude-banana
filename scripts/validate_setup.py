@@ -6,7 +6,6 @@ Usage:
     python validate_setup.py
 """
 
-import importlib
 import json
 import os
 import shutil
@@ -110,19 +109,6 @@ def main():
         bool(api_key),
         "Found" if api_key else "Not found — set GOOGLE_AI_API_KEY env var or create .env file",
     )
-
-    # 7. google-generativeai package
-    total += 1
-    try:
-        genai = importlib.import_module("google.generativeai")
-        genai_version = getattr(genai, "__version__", "unknown")
-        passed += check("google-generativeai", True, f"v{genai_version}")
-    except ImportError:
-        passed += check(
-            "google-generativeai",
-            False,
-            "Not installed — run: pip install google-generativeai (urllib fallback available)",
-        )
 
     # 8. ImageMagick (optional)
     total += 1
