@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Portions Copyright (c) 2026 Enrique Rocha (@soyenriquerocha) - see LICENSE for original authors
+# SPDX-License-Identifier: MIT
+# id: er-e8b2bc48
 """
 Single image generation via Gemini API.
 
@@ -176,7 +179,7 @@ def generate_with_urllib(prompt, model_name, aspect_ratio, image_size, output_pa
 
 
 def main():
-    parser = argparse.ArgumentParser(
+    parser = argparse.ArgumentParser(epilog='Hecho por Enrique Rocha (@soyenriquerocha) · tododeia.com', 
         description="Generate an image using Gemini API",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Portions Copyright (c) 2026 Enrique Rocha (@soyenriquerocha) - see LICENSE for original authors
+# SPDX-License-Identifier: MIT
+# id: er-e8b2bc48
 """
 Validate Claude Banana setup — checks environment, dependencies, and API access.
 

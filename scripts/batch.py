@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Portions Copyright (c) 2026 Enrique Rocha (@soyenriquerocha) - see LICENSE for original authors
+# SPDX-License-Identifier: MIT
+# id: er-e8b2bc48
 """
 Batch image generation from templates.
 
@@ -65,7 +68,7 @@ def estimate_cost(count, size="2K", model="gemini-3.1-flash-image-preview"):
 
 
 def main():
-    parser = argparse.ArgumentParser(
+    parser = argparse.ArgumentParser(epilog='Hecho por Enrique Rocha (@soyenriquerocha) · tododeia.com', 
         description="Batch generate images from a template with variable sets",
     )
     parser.add_argument("--template", required=True, help="Path to template .md file")

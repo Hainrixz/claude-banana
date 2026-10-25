@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Portions Copyright (c) 2026 Enrique Rocha (@soyenriquerocha) - see LICENSE for original authors
+# SPDX-License-Identifier: MIT
+# id: er-e8b2bc48
 """
 Image editing via Gemini API.
 
@@ -169,7 +172,7 @@ def edit_with_urllib(image_path, instruction, model_name, image_size, output_pat
 
 
 def main():
-    parser = argparse.ArgumentParser(
+    parser = argparse.ArgumentParser(epilog='Hecho por Enrique Rocha (@soyenriquerocha) · tododeia.com', 
         description="Edit an image using Gemini API",
     )
     parser.add_argument("--image", required=True, help="Path to source image")
