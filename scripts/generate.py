@@ -20,14 +20,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-# Try google-generativeai first, fall back to stdlib urllib
-try:
-    import google.generativeai as genai
-    HAS_GENAI = True
-except ImportError:
-    HAS_GENAI = False
-    import urllib.request
-    import urllib.error
+import urllib.error
+import urllib.request
 
 
 def load_api_key():
@@ -89,46 +83,8 @@ def load_template(template_path, variables):
     return prompt
 
 
-def generate_with_genai(prompt, model_name, aspect_ratio, image_size, output_path):
-    """Generate image using google-generativeai library."""
-    api_key = load_api_key()
-    if not api_key:
-        print("Error: No API key found. Set GOOGLE_AI_API_KEY environment variable.")
-        sys.exit(1)
-
-    genai.configure(api_key=api_key)
-
-    model = genai.GenerativeModel(model_name)
-
-    generation_config = {
-        "response_modalities": ["IMAGE"],
-    }
-    if image_size:
-        generation_config["image_size"] = image_size.upper()
-
-    response = model.generate_content(
-        prompt,
-        generation_config=generation_config,
-    )
-
-    # Extract image from response
-    for part in response.candidates[0].content.parts:
-        if hasattr(part, "inline_data") and part.inline_data.mime_type.startswith("image/"):
-            image_data = part.inline_data.data
-            with open(output_path, "wb") as f:
-                f.write(image_data)
-            return output_path
-
-    print("Error: No image was returned in the response.")
-    if response.candidates[0].content.parts:
-        for part in response.candidates[0].content.parts:
-            if hasattr(part, "text"):
-                print(f"Model response: {part.text}")
-    sys.exit(1)
-
-
 def generate_with_urllib(prompt, model_name, aspect_ratio, image_size, output_path):
-    """Generate image using stdlib urllib (fallback)."""
+    """Generate an image via the REST API using only the standard library."""
     api_key = load_api_key()
     if not api_key:
         print("Error: No API key found. Set GOOGLE_AI_API_KEY environment variable.")
@@ -136,14 +92,22 @@ def generate_with_urllib(prompt, model_name, aspect_ratio, image_size, output_pa
 
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
 
+    # aspectRatio and imageSize belong inside imageConfig. Placed directly on
+    # generationConfig the API replies 400 INVALID_ARGUMENT
+    # ("Unknown name \"imageSize\" at 'generation_config'"), which made every
+    # generation fail.
+    image_config = {}
+    if aspect_ratio:
+        image_config["aspectRatio"] = aspect_ratio
+    if image_size:
+        image_config["imageSize"] = image_size.upper()
+
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "responseModalities": ["IMAGE"],
-        },
+        "generationConfig": {"responseModalities": ["IMAGE"]},
     }
-    if image_size:
-        payload["generationConfig"]["imageSize"] = image_size.upper()
+    if image_config:
+        payload["generationConfig"]["imageConfig"] = image_config
 
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
@@ -234,12 +198,7 @@ def main():
     print(f"Output: {output_path}")
     print()
 
-    # Generate
-    if HAS_GENAI:
-        generate_with_genai(prompt, args.model, args.aspect, args.size, output_path)
-    else:
-        print("Note: google-generativeai not installed, using urllib fallback.")
-        generate_with_urllib(prompt, args.model, args.aspect, args.size, output_path)
+    generate_with_urllib(prompt, args.model, args.aspect, args.size, output_path)
 
     print(f"Image saved to: {output_path}")
 

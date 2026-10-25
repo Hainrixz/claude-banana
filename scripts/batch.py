@@ -151,13 +151,7 @@ def main():
     # Import generate function
     script_dir = Path(__file__).parent
     sys.path.insert(0, str(script_dir))
-    from generate import generate_with_genai, generate_with_urllib, load_api_key
-
-    try:
-        import google.generativeai
-        use_genai = True
-    except ImportError:
-        use_genai = False
+    from generate import generate_with_urllib, load_api_key
 
     if not load_api_key():
         print("Error: No API key found. Set GOOGLE_AI_API_KEY environment variable.")
@@ -172,10 +166,7 @@ def main():
         print(f"[{i}/{count}] Generating...")
 
         try:
-            if use_genai:
-                generate_with_genai(prompt, args.model, args.aspect, args.size, output_path)
-            else:
-                generate_with_urllib(prompt, args.model, args.aspect, args.size, output_path)
+            generate_with_urllib(prompt, args.model, args.aspect, args.size, output_path)
 
             results.append({"index": i, "status": "success", "path": output_path, "variables": var_set})
             print(f"  Saved: {output_path}")
