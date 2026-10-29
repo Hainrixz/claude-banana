@@ -21,3 +21,10 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Private ToAPIs evaluation state and output
+.toapis-state/
+toapis-output/
+.state/
+outputs/
+__pycache__/

@@ -168,3 +168,8 @@ MIT — free to use, modify, and share. See [LICENSE](LICENSE).
 
 <sub>Hecho por **Enrique Rocha (@soyenriquerocha)** · [tododeia.com](https://www.tododeia.com)⁠​‌‌​​‌​‌​‌‌‌​​‌​​​‌​‌‌​‌​‌‌​​‌​‌​​‌‌‌​​​​‌‌​​​‌​​​‌‌​​‌​​‌‌​​​‌​​‌‌​​​‌‌​​‌‌​‌​​​​‌‌‌​​​⁠</sub>
 <!-- marca-agua:fin -->
+
+
+### Optional ToAPIs image route
+
+An additive, quotation-first script reuses the existing template loader for gpt-image-2 and gpt-image-2.5-flare. See [setup and validation](docs/toapis.md) / [Español](docs/toapis.es.md). The existing Gemini route is unchanged.
