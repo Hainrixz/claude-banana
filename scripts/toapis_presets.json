@@ -1,0 +1,46 @@
+{
+  "gpt-image-2.5-flare": {
+    "model": "gpt-image-2.5-flare",
+    "kind": "image",
+    "request": {
+      "model": "gpt-image-2.5-flare",
+      "n": 1,
+      "size": "16:9",
+      "metadata": {
+        "resolution": "1K"
+      },
+      "quality": "high",
+      "resolution": "1K"
+    },
+    "pricing_conditions": {
+      "resolution": "1K",
+      "n": 1,
+      "input_image_count": 0,
+      "quality": "high"
+    },
+    "needs_image": false,
+    "historical_api_success": true,
+    "current_pricing_status": "available"
+  },
+  "gpt-image-2": {
+    "model": "gpt-image-2",
+    "kind": "image",
+    "request": {
+      "model": "gpt-image-2",
+      "n": 1,
+      "size": "16:9",
+      "resolution": "1K",
+      "metadata": {
+        "resolution": "1K"
+      }
+    },
+    "pricing_conditions": {
+      "resolution": "1K",
+      "n": 1,
+      "input_image_count": 0
+    },
+    "needs_image": false,
+    "historical_api_success": true,
+    "current_pricing_status": "available"
+  }
+}
